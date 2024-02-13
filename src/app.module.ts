@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ToastModule } from './toast/toast.module';
+import { CommonModule } from './common/common.module';
+import { GoogleCalendarModule } from './google.calendar/google.calendar.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [ToastModule, CommonModule, GoogleCalendarModule],
 })
 export class AppModule {}
