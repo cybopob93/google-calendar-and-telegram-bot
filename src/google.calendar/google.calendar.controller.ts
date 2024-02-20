@@ -1,27 +1,26 @@
-import {
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Query, Redirect, Render } from '@nestjs/common';
 import { GoogleCalendarService } from './google.calendar.service';
 
 @Controller('google.calendar')
 export class GoogleCalendarController {
   constructor(private googleCalendarService: GoogleCalendarService) {}
 
-  @Put()
-  @HttpCode(HttpStatus.NO_CONTENT)
-  createEvent() {
-    console.log('123');
+  @Get()
+  @Render('googleAuthCallback')
+  async showSuccessPage() {
+    return {
+      message:
+        'Вы успешно авторизованы! Данная вкладка закроется автоматически через:',
+      additionalMessage:
+        'Если вкладка не закрылась автоматически, пожалуйста закройте ее сами :)',
+      lang: 'ru',
+    };
   }
 
   @Get('/oauth')
+  @Redirect('/google.calendar', 302)
   async saveOauthData(@Query('code') authorizationCode: string) {
     await this.googleCalendarService.saveUserToken(authorizationCode);
-    return 'Вы успешно авторизованы, пожалуйста закройте данную вкладку';
   }
 
   @Get('/auth-url')

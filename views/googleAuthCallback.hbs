@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8" />
+  <title>Google-telegram bot authorizer</title>
+  <style>
+    body {
+      text-align: center;
+      background: #00ecb9;
+      font-family: sans-serif;
+      font-weight: 100;
+    }
+
+    .countdown-title {
+      color: #396;
+      font-weight: 100;
+      font-size: 40px;
+      margin: 40px 0 20px;
+    }
+
+    .countdown-sub-title {
+      color: #396;
+      font-weight: 100;
+      font-size: 30px;
+      margin: 40px 0 20px;
+    }
+
+    .countdown {
+      font-family: sans-serif;
+      color: #fff;
+      display: inline-block;
+      font-weight: 100;
+      text-align: center;
+      font-size: 30px;
+    }
+
+    .countdown-number {
+      padding: 10px;
+      border-radius: 3px;
+      background: #00bf96;
+      display: inline-block;
+    }
+
+    .countdown-time {
+      padding: 15px;
+      border-radius: 3px;
+      background: #00816a;
+      display: inline-block;
+    }
+
+    .countdown-text {
+      display: block;
+      padding-top: 5px;
+      font-size: 16px;
+    }
+  </style>
+  <script>
+    function getTimeRemaining(endTime) {
+      const t = endTime - (+new Date());
+      const seconds = Math.floor((t / 1000) % 60);
+      const milliseconds = Math.floor((t / 10) % 60);
+      return {
+        seconds: seconds >= 0 ? seconds : 0,
+        milliseconds: milliseconds >= 0 ? milliseconds : 0,
+        total: t,
+      };
+    }
+
+    function initializeClock(id, endTime) {
+      const clock = document.getElementById(id);
+      const secondsSpan = clock.querySelector('.seconds');
+      const millisecondsSpan = clock.querySelector('.milliseconds');
+      let timeinterval = 0;
+
+      function updateClock() {
+        let { total, milliseconds, seconds } = getTimeRemaining(endTime);
+        secondsSpan.innerHTML = ('0' + seconds).slice(-2);
+        millisecondsSpan.innerHTML = ('0' + milliseconds).slice(-2);
+
+        if (total <= 0) {
+          clearInterval(timeinterval);
+          window.close();
+        }
+      }
+
+      updateClock();
+      timeinterval = setInterval(updateClock, 10);
+    }
+
+    function ready() {
+      const deadline = +new Date() + 10 * 1000;
+      initializeClock('countdown', deadline);
+    }
+    document.addEventListener("DOMContentLoaded", ready);
+    function close_window() {
+      if (confirm("Close Window?")) {
+        close();
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1 class="countdown-title">{{ message }}</h1>
+  <div id="countdown" class="countdown">
+    <div class="countdown-number">
+      <span class="seconds countdown-time"></span>
+      <span class="countdown-text">Seconds</span>
+    </div>
+    <div class="countdown-number">
+      <span class="milliseconds countdown-time"></span>
+      <span class="countdown-text">Milliseconds</span>
+    </div>
+  </div>
+  <h2 class="countdown-sub-title">{{ additionalMessage }}</h2>
+</body>
+</html>
