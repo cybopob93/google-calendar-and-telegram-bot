@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Redirect, Render } from '@nestjs/common';
+import { Controller, Get, Put, Query, Redirect, Render } from '@nestjs/common';
 import { GoogleCalendarService } from './google.calendar.service';
 
 @Controller('google.calendar')
@@ -26,5 +26,10 @@ export class GoogleCalendarController {
   @Get('/auth-url')
   generateAuthUrl() {
     return this.googleCalendarService.generateAuthUrl();
+  }
+
+  @Put('/add-event')
+  addEventToCalendar(): Promise<any> {
+    return this.googleCalendarService.addEventToCalendar();
   }
 }
