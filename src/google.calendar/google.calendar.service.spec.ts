@@ -1,7 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { GoogleCalendarService } from './google.calendar.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { GoogleCalendarService } from "./google.calendar.service";
 
-describe('GoogleCalendarService', () => {
+describe("GoogleCalendarService", () => {
   let service: GoogleCalendarService;
 
   beforeEach(async () => {
@@ -12,7 +12,7 @@ describe('GoogleCalendarService', () => {
     service = module.get<GoogleCalendarService>(GoogleCalendarService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

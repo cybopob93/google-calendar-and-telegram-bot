@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { PostToastDto } from './dto/PostToastDto';
+import { Injectable } from "@nestjs/common";
+import { PostToastDto } from "./dto/PostToastDto";
 
 @Injectable()
 export class ToastService {

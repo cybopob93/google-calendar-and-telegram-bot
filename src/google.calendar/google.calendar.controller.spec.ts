@@ -1,7 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { GoogleCalendarController } from './google.calendar.controller';
+import { Test, TestingModule } from "@nestjs/testing";
+import { GoogleCalendarController } from "./google.calendar.controller";
 
-describe('GoogleCalendarController', () => {
+describe("GoogleCalendarController", () => {
   let controller: GoogleCalendarController;
 
   beforeEach(async () => {
@@ -12,7 +12,7 @@ describe('GoogleCalendarController', () => {
     controller = module.get<GoogleCalendarController>(GoogleCalendarController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });

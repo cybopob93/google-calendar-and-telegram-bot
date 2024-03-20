@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
-import { Repository } from 'typeorm';
-import { Auth } from 'googleapis';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "./user.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class UserService {
@@ -10,22 +9,25 @@ export class UserService {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  async create(email: string, token: Auth.Credentials): Promise<User> {
-    const user = this.usersRepository.create({ email, token });
+  async create(chatId: number, name: string): Promise<User> {
+    const user = this.usersRepository.create({
+      chatId,
+      name,
+    });
     await this.usersRepository.insert(user);
     return user;
   }
 
-  getById(id: string): Promise<User> {
-    return this.usersRepository.findOneBy({ id });
+  getByChatId(chatId: number): Promise<User | null> {
+    return this.usersRepository.findOneBy({ chatId });
   }
 
-  getByEmail(email: string) {
+  getByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOneBy({ email });
   }
 
-  async remove(id: string): Promise<void> {
-    await this.usersRepository.delete(id);
+  async removeByChatId(chatId: number): Promise<void> {
+    await this.usersRepository.delete(chatId);
   }
 
   async updateUser(user: User) {

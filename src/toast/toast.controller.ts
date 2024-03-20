@@ -8,24 +8,24 @@ import {
   ParseIntPipe,
   Post,
   Query,
-} from '@nestjs/common';
-import { PostToastDto } from './dto/PostToastDto';
-import { ToastService } from './toast.service';
+} from "@nestjs/common";
+import { PostToastDto } from "./dto/PostToastDto";
+import { ToastService } from "./toast.service";
 
-@Controller('toast')
+@Controller("toast")
 export class ToastController {
   constructor(private toastService: ToastService) {}
 
   @Get()
   gew() {
-    return 'toast';
+    return "toast";
   }
 
-  @Post(':pr')
+  @Post(":pr")
   @HttpCode(HttpStatus.NO_CONTENT)
   gew2(
-    @Param('pr') pr: string,
-    @Query('x', ParseIntPipe) xQ: number,
+    @Param("pr") pr: string,
+    @Query("x", ParseIntPipe) xQ: number,
     @Body() smth: PostToastDto,
   ) {
     console.log(pr, xQ);

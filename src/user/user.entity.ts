@@ -1,14 +1,17 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Auth } from 'googleapis';
+import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Auth } from "googleapis";
 
-@Entity('users')
+@Entity("users")
 export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryColumn({ type: "int" })
+  chatId: number;
 
-  @Column({ type: 'varchar', unique: true })
-  email: string;
+  @Column({ type: "varchar" })
+  name: string;
 
-  @Column({ type: 'json' })
-  token: Auth.Credentials;
+  @Column({ type: "varchar", nullable: true })
+  email?: string | undefined;
+
+  @Column({ type: "json", nullable: true })
+  token?: Auth.Credentials | undefined;
 }

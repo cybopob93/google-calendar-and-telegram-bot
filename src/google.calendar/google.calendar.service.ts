@@ -1,16 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { google, Auth } from 'googleapis';
-import { ConfigService } from '../common/config.service';
-import { UserService } from '../user/user.service';
-import { DateTime } from 'luxon';
-import { User } from '../user/user.entity';
+import { Injectable } from "@nestjs/common";
+import { google, Auth } from "googleapis";
+import { ConfigService } from "../common/config.service";
+import { UserService } from "../user/user.service";
+import { DateTime } from "luxon";
+import { User } from "../user/user.entity";
 
 @Injectable()
 export class GoogleCalendarService {
   private readonly SCOPES = [
-    'https://www.googleapis.com/auth/calendar',
-    'https://www.googleapis.com/auth/tasks',
-    'https://www.googleapis.com/auth/userinfo.email',
+    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/tasks",
+    "https://www.googleapis.com/auth/userinfo.email",
   ];
 
   constructor(
@@ -20,16 +20,16 @@ export class GoogleCalendarService {
 
   private getOAuthClient(): Auth.OAuth2Client {
     return new google.auth.OAuth2({
-      clientId: this.config.get('GOOGLE_YOUR_CLIENT_ID'),
-      clientSecret: this.config.get('GOOGLE_YOUR_CLIENT_SECRET'),
-      redirectUri: this.config.get('GOOGLE_YOUR_REDIRECT_URL'),
+      clientId: this.config.get("GOOGLE_YOUR_CLIENT_ID"),
+      clientSecret: this.config.get("GOOGLE_YOUR_CLIENT_SECRET"),
+      redirectUri: this.config.get("GOOGLE_YOUR_REDIRECT_URL"),
     });
   }
 
   private generateOAuthClient(user: User): Auth.OAuth2Client {
     const oAuthClient = this.getOAuthClient();
     oAuthClient.setCredentials(user.token);
-    oAuthClient.on('tokens', (tokens) => {
+    oAuthClient.on("tokens", (tokens) => {
       if (tokens) {
         user.token.access_token = tokens.access_token;
         user.token.scope = tokens.scope;
@@ -37,7 +37,7 @@ export class GoogleCalendarService {
         user.token.expiry_date = tokens.expiry_date;
         this.userService
           .updateUser(user)
-          .then(() => console.log('Token was updated'));
+          .then(() => console.log("Token was updated"));
       }
     });
     return oAuthClient;
@@ -45,7 +45,7 @@ export class GoogleCalendarService {
 
   generateAuthUrl() {
     return this.getOAuthClient().generateAuthUrl({
-      access_type: 'offline',
+      access_type: "offline",
       scope: this.SCOPES,
       include_granted_scopes: true,
     });
@@ -55,21 +55,20 @@ export class GoogleCalendarService {
     const oAuthClient = this.getOAuthClient();
     const { tokens } = await oAuthClient.getToken(authorizationCode);
     oAuthClient.setCredentials(tokens);
-    const oauth2 = google.oauth2({ version: 'v2', auth: oAuthClient });
+    const oauth2 = google.oauth2({ version: "v2", auth: oAuthClient });
     const response = await oauth2.userinfo.get();
     const existUser = await this.userService.getByEmail(response.data.email);
     if (existUser) {
       existUser.token = tokens;
       await this.userService.updateUser(existUser);
     } else {
-      await this.userService.create(response.data.email, tokens);
+      // TODO: create user only with chatId
+      // await this.userService.create(response.data.email, tokens);
     }
   }
 
   async addEventToCalendar(): Promise<any> {
-    const user = await this.userService.getById(
-      '0b24f4c2-37f6-4bd3-ac64-9cfa48a8bebf',
-    );
+    const user = await this.userService.getByChatId(5);
     const oAuthClient = this.generateOAuthClient(user);
 
     // try {
@@ -116,24 +115,24 @@ export class GoogleCalendarService {
     // }
 
     try {
-      const tasksService = google.tasks({ version: 'v1', auth: oAuthClient });
+      const tasksService = google.tasks({ version: "v1", auth: oAuthClient });
       const { data: taskList } = await tasksService.tasklists.list({
         maxResults: 1,
       });
 
       if (taskList.items.length === 0) {
-        throw new Error('No task list found');
+        throw new Error("No task list found");
       }
       const taskListId = taskList.items[0].id;
       const result = await tasksService.tasks.insert({
         tasklist: taskListId,
         requestBody: {
-          title: 'task title',
-          notes: 'task notes',
+          title: "task title",
+          notes: "task notes",
           due: DateTime.now()
-            .startOf('day')
+            .startOf("day")
             .plus({ day: 1, hour: 18 })
-            .setZone('Europe/Minsk')
+            .setZone("Europe/Minsk")
             .toISO(),
         },
       });
@@ -181,6 +180,6 @@ export class GoogleCalendarService {
     //   console.log(e.message, e);
     // }
 
-    return 'oAuthClient.getTokenInfo(user.token.access_token)';
+    return "oAuthClient.getTokenInfo(user.token.access_token)";
   }
 }
