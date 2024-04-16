@@ -4,4 +4,5 @@ export interface ConfigServiceVariables {
   GOOGLE_YOUR_CLIENT_SECRET: string;
   GOOGLE_YOUR_REDIRECT_URL: string;
   TELEGRAM_TOKEN_BOT: string;
+  RABBITMQ_URL: string;
 }

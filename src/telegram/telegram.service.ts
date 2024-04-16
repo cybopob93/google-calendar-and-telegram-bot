@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import * as TelegramBot from "node-telegram-bot-api";
 import { ConfigService } from "../common/config.service";
 import { UserService } from "../user/user.service";
+import { TelegramProducerService } from "../queue/telegram.producer.service";
 
 @Injectable()
 export class TelegramService {
@@ -17,6 +18,7 @@ export class TelegramService {
   constructor(
     private config: ConfigService,
     private userService: UserService,
+    private telegramProducerService: TelegramProducerService,
   ) {
     const token = config.get("TELEGRAM_TOKEN_BOT");
     this.bot = new TelegramBot(token, {
@@ -30,6 +32,7 @@ export class TelegramService {
     this.availableCommands.forEach((command) => {
       this.bot.onText(command.command, (msg) => {
         this[command.action](msg).catch((err) => console.error(err));
+        this.telegramProducerService.addToTelegramQueue(msg);
       });
     });
     await this.bot.startPolling();

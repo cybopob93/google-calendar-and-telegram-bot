@@ -13,6 +13,8 @@ export class ConfigService {
       GOOGLE_YOUR_REDIRECT_URL: envalid.str(),
 
       TELEGRAM_TOKEN_BOT: envalid.str(),
+
+      RABBITMQ_URL: envalid.url(),
     });
   }
 
